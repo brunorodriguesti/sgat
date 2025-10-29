@@ -2,3 +2,5 @@ Para o projeto funcionar:
 1. MySQL e esquema sgat devem estar ativos.
 2. Iniciar Spring Boot: cd api/sgat && mvn spring-boot:run.
 3. Iniciar Angular: cd sgat-ui && npm install && ng serve ou ng serve --open.
+
+USAR branch dev como padrão
