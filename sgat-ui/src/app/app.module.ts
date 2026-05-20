@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // Import FormsModule and ReactiveFormsModule
 import { HttpClientModule } from '@angular/common/http'; // Import HttpClientModule
 
 import { AppRoutingModule } from './app-routing.module';
@@ -23,6 +23,7 @@ import { FeriasLicencasListComponent } from './ferias/ferias-licencas-list.compo
 import { FeriasLicencasFormComponent } from './ferias/ferias-licencas-form.component';
 import { HorasTrabalhadasListComponent } from './controlar-hora-mes/horas-trabalhadas-list.component';
 import { HorasTrabalhadasFormComponent } from './controlar-hora-mes/horas-trabalhadas-form.component';
+import { ControlarHoraMesComponent } from './controlar-hora-mes/controlar-hora-mes.component'; // Import the new component
 
 @NgModule({
   declarations: [
@@ -43,12 +44,14 @@ import { HorasTrabalhadasFormComponent } from './controlar-hora-mes/horas-trabal
     FeriasLicencasListComponent,
     FeriasLicencasFormComponent,
     HorasTrabalhadasListComponent,
-    HorasTrabalhadasFormComponent
+    HorasTrabalhadasFormComponent,
+    ControlarHoraMesComponent // Add the new component here
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule, // Add FormsModule here
+    ReactiveFormsModule, // Add ReactiveFormsModule here
     HttpClientModule // Add HttpClientModule here
   ],
   providers: [],

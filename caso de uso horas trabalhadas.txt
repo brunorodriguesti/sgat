@@ -1,0 +1,53 @@
+Contexto:
+A empresa Spread Tecnologia, trabalha com alocação de recursos que atuam diretamente com o cliente. Os funcionários da Spread atuam como consultores de tecnologia para as empresas e cada empresa possui projetos nos quais pode haver um ou mais funcionários da Spread trabalhando. Cada projeto possui um gestor do cliente que recebe mensalmente um relatório com os nomes dos funcionários, valor da hora, horas trabalhadas e o valor total das horas trabalhadas. Contudo, o volume de funcionários alocadas pode ser considerável e o gestor da Spread fica encarregado de controlar manualmente esse relatório por meio de uma planilha eletrônica. Além do tempo gasto pelo gestor, a planilha pode apontar erros uma vez que são realizados apontamentos de horas manualmente pelo gestor. Para evitar o tempo gasto e os erros no relatório, o projeto do LTD visa desenvolver um sistema que gere automaticamente este relatório.
+No semestre de 2025.2 o LTD desenvolveu as funcionalidades de cadastros. Para o LTD de 2026.1 será desenvolvida a funcionalidade de controle de horas.
+
+Escopo: Este projeto é continuação do projeto do LTD 2025.2, nele, foram criadas as funcionalidades de cadastro de funcionários, projeto, feriados e licenças. No projeto atual será desenvolvida a funcionalidade de controlar horas. 
+Requisito: Nesta funcionalidade, o usuário deve escolher o período (data de início e  data fim) e ao clicar e ‘Gerar’ o sistema deve buscar os funcionários com as horas trabalhadas no período, as horas são 8 horas diárias, caso houver feriado ou licença nesse período as horas ou dias devem ser abatidas. O sistema deve exibir em uma lista com os funcionários, cpf, nome do funcionário, com suas respectivas horas trabalhadas (8 horas – licenças e feriados do período), o valor da hora de cada funcionário e valor total (horas trabalhadas x valor da hora). O sistema deve permitir ao usuário editar a hora trabalhada manualmente.
+ 
+CDU001 – CONTROLAR HORAS
+Ator:	Gestor
+Objetivo	Definir o período do relatório
+Pré-condição	O usuário acessou o caso de uso por meio da tela de Controlar Horas
+Fluxo Principal:
+1 . Gestor seleciona a data Inicial e a data final
+2. O Gestor seleciona o cliente
+3. O Gestor seleciona o projeto
+4. O Gestor clica no botão de Gerar relatório
+5. O Caso de Uso 02 – GERAR RELATÓRIO DE HORAS TRABALHADAS é acionado.
+
+Fluxo de Exceção:
+1a – A data é uma data inválida
+1b – A data de início precisa ser menor do que a data final.
+
+
+CDU002 – GERAR RELATÓRIO DE HORAS TRABALHADAS
+Ator:	Gestor e sistema
+Objetivo	Listar os funcionários
+Pré-condição	O gestor inseriu os filtros para compor o relatório de horas trabalhadas no CDU001 – Controlar Horas
+Fluxo Principal:
+1 . O sistema recupera os filtros de data inicial, data final, cliente e projeto.
+2. O sistema verifica calcula as horas de cada funcionário relacionado ao projeto e ao cliente contando a quantidade de dias entre a data inicial e a data final vezes as 8 horas.
+3. O sistema subtrai a quantidade de sábados e domingos que estão dentro do período selecionado.
+4. O sistema recupera os feriados existentes no período selecionado.
+5. O sistema recupera as férias e licenças no período selecionado referente a cada funcionário
+6. O sistema subtrai as horas de cada funcionário com os feriados do período menos as licenças e férias do período referente a cada funcionário.
+8. O sistema exibe a lista de funcionários do projeto selecionado, com o seu nome, valor de horas trabalhadas calculada e o valor total calculado.
+
+
+Fluxo Alternativo – Salvar:
+1. O gestor clicou na o botão salva.
+2. O sistema persiste na tabela horas trabalhadas o id do funcionário, a data trabalho final, as horas calculadas e o valor que é calculado pela multiplicação das horas trabalhadas vezes o valor da hora de cada funcionário.
+
+Fluxo Alternativo – Editar:
+1. O gestor altera a quantidade horas do funcionário.
+2. O sistema calcula o valor total com base na nova quantidade horas do funcionário
+Fluxo Alternativo – Excluir:
+1. O gestor selecionou um ou mais funcionário da lista
+2. O gestor clicou no botão excluir.
+3. O sistema exclui o funcionário selecionado da lista apresentada.
+Fluxo Alternativo – Imprimir:
+1. O gestor clicou no botão imprimir
+2. O sistema gera o pdf com as informações da lista
+
+

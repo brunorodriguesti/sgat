@@ -17,6 +17,7 @@ import { FeriasLicencasListComponent } from './ferias/ferias-licencas-list.compo
 import { FeriasLicencasFormComponent } from './ferias/ferias-licencas-form.component';
 import { HorasTrabalhadasListComponent } from './controlar-hora-mes/horas-trabalhadas-list.component';
 import { HorasTrabalhadasFormComponent } from './controlar-hora-mes/horas-trabalhadas-form.component';
+import { ControlarHoraMesComponent } from './controlar-hora-mes/controlar-hora-mes.component';
 
 const routes: Routes = [
   { path: 'clientes', component: ClienteListComponent },
@@ -40,6 +41,7 @@ const routes: Routes = [
   { path: 'horas-trabalhadas', component: HorasTrabalhadasListComponent },
   { path: 'horas-trabalhadas/novo', component: HorasTrabalhadasFormComponent },
   { path: 'horas-trabalhadas/editar/:id', component: HorasTrabalhadasFormComponent },
+  { path: 'controlar-horas', component: ControlarHoraMesComponent },
   { path: 'configuracoes/afastamentos', component: AfastamentosComponent },
   { path: '', component: HomeComponent, pathMatch: 'full' }, // Default route
   { path: 'home', component: HomeComponent },
