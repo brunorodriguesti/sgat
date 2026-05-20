@@ -13,7 +13,9 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class HorasTrabalhadasDTO {
     private Long id;
-    private LocalDate dataTrabalho;
+    private LocalDate dataRelatorio;
+    private LocalDate dataInicio;
+    private LocalDate dataFim;
     private LocalTime horasTrabalhadas;
     private Long funcionarioId;
     private String funcionarioNome; // Para exibir o nome do funcionário

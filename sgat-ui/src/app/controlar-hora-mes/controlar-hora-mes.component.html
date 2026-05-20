@@ -1,0 +1,85 @@
+<div class="container">
+  <h2>Controlar Horas Trabalhadas</h2>
+
+  <form [formGroup]="filtroForm" (ngSubmit)="gerarRelatorio()" class="filter-form">
+    <div class="form-group">
+      <label for="dataInicial">Data Inicial:</label>
+      <input type="date" id="dataInicial" formControlName="dataInicial" class="form-control">
+      <div *ngIf="filtroForm.get('dataInicial')?.invalid && filtroForm.get('dataInicial')?.touched" class="error-message">
+        Data Inicial é obrigatória.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="dataFinal">Data Final:</label>
+      <input type="date" id="dataFinal" formControlName="dataFinal" class="form-control">
+      <div *ngIf="filtroForm.get('dataFinal')?.invalid && filtroForm.get('dataFinal')?.touched" class="error-message">
+        Data Final é obrigatória.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="clienteId">Cliente:</label>
+      <select id="clienteId" formControlName="clienteId" class="form-control">
+        <option value="">Selecione um Cliente</option>
+        <option *ngFor="let cliente of clientes" [value]="cliente.id">{{ cliente.nome }}</option>
+      </select>
+      <div *ngIf="filtroForm.get('clienteId')?.invalid && filtroForm.get('clienteId')?.touched" class="error-message">
+        Cliente é obrigatório.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="projetoId">Projeto:</label>
+      <select id="projetoId" formControlName="projetoId" class="form-control">
+        <option value="">Selecione um Projeto</option>
+        <option *ngFor="let projeto of projetos" [value]="projeto.id">{{ projeto.nome }}</option>
+      </select>
+      <div *ngIf="filtroForm.get('projetoId')?.invalid && filtroForm.get('projetoId')?.touched" class="error-message">
+        Projeto é obrigatório.
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="filtroForm.invalid" class="btn btn-primary">Gerar Relatório</button>
+  </form>
+
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="relatorioHoras.length > 0" class="report-section mt-4">
+    <h3>Relatório de Horas Trabalhadas</h3>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th><input type="checkbox" (change)="toggleSelectAll($event)"></th>
+          <th>Funcionário</th>
+          <th>CPF</th>
+          <th>Horas Calculadas</th>
+          <th>Horas Editáveis</th>
+          <th>Valor Hora</th>
+          <th>Valor Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let funcionario of relatorioHoras">
+          <td><input type="checkbox" [(ngModel)]="funcionario.selected"></td>
+          <td>{{ funcionario.funcionarioNome }}</td>
+          <td>{{ funcionario.cpf }}</td>
+          <td>{{ funcionario.horasTrabalhadasCalculadas }}</td>
+          <td>
+            <input type="number" [(ngModel)]="funcionario.editableHoras" (ngModelChange)="onHorasEditadas(funcionario)" class="form-control form-control-sm">
+          </td>
+          <td>{{ funcionario.valorHora | currency:'BRL':'symbol':'1.2-2' }}</td>
+          <td>{{ funcionario.valorTotal | currency:'BRL':'symbol':'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="report-actions">
+      <button class="btn btn-success mr-2" (click)="salvarHoras()">Salvar</button>
+      <button class="btn btn-danger mr-2" (click)="excluirHoras()">Excluir Selecionados</button>
+      <button class="btn btn-info" (click)="imprimirRelatorio()">Imprimir PDF</button>
+    </div>
+  </div>
+</div>
