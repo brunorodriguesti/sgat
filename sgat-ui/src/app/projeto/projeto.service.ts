@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Projeto {
@@ -23,6 +23,12 @@ export class ProjetoService {
 
   getProjetoById(id: number): Observable<Projeto> {
     return this.http.get<Projeto>(`${this.apiUrl}/${id}`);
+  }
+
+  // Novo método para buscar projetos por clienteId
+  getProjetosByClienteId(clienteId: number): Observable<Projeto[]> {
+    const params = new HttpParams().set('clienteId', clienteId.toString());
+    return this.http.get<Projeto[]>(this.apiUrl, { params });
   }
 
   createProjeto(projeto: Projeto): Observable<Projeto> {

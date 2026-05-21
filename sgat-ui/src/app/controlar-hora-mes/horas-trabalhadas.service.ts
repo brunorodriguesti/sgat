@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 export interface HorasTrabalhadas {
   id?: number;
   dataTrabalho: string; // Representando LocalDate como string (YYYY-MM-DD)
-  horasTrabalhadas: string; // Representando LocalTime como string (HH:mm:ss)
+  horasTrabalhadas: number; // Alterado para number
   funcionarioId: number;
   funcionarioNome?: string; // Para exibir o nome do funcionário
   valor: number;

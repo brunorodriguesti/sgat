@@ -63,9 +63,9 @@ export class ControlarHoraMesComponent implements OnInit {
   }
 
   loadProjetosByCliente(clienteId: number): void {
-    this.projetoService.getAllProjetos().subscribe({
+    this.projetoService.getProjetosByClienteId(clienteId).subscribe({
       next: (data) => {
-        this.projetos = data.filter(p => p.clienteId === clienteId);
+        this.projetos = data;
         this.filtroForm.get('projetoId')?.setValue(''); // Reset project selection
       },
       error: (err) => {
@@ -125,7 +125,7 @@ export class ControlarHoraMesComponent implements OnInit {
     const horasParaSalvar: HorasTrabalhadas[] = this.relatorioHoras.map(f => ({
       id: f.id, // Include ID if it exists for update
       dataTrabalho: dataFinal, // As per documentation, "data trabalho final"
-      horasTrabalhadas: f.editableHoras ? f.editableHoras.toString() : f.horasTrabalhadasCalculadas.toString(), // Use editable if present, else calculated
+      horasTrabalhadas: f.editableHoras !== undefined ? f.editableHoras : f.horasTrabalhadasCalculadas, // Use editable if present, else calculated
       funcionarioId: f.funcionarioId,
       valor: f.valorTotal
     }));
