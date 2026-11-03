@@ -10,7 +10,7 @@
 
 ## 1. Visão geral do negócio
 
-A empresa (referida como **Spread Tecnologia**) presta o serviço de **Talent Body**: aloca consultores (desenvolvedores, DevOps, analistas funcionais etc.) em projetos de empresas clientes. O serviço é **cobrado por hora**.
+A empresa  presta o serviço de **Talent Body**: aloca consultores (desenvolvedores, DevOps, analistas funcionais etc.) em projetos de empresas clientes. O serviço é **cobrado por hora**.
 
 **Problema atual:** o gestor preenche uma planilha por funcionário (dias e horas trabalhadas, compensações para mais e para menos). Os gerentes dos projetos no cliente validam as planilhas e só depois ocorre o faturamento. O processo é manual, lento, sujeito a erro e atrasa o faturamento (pode haver de 1 a mais de 40 funcionários por setor).
 
@@ -19,7 +19,7 @@ A empresa (referida como **Spread Tecnologia**) presta o serviço de **Talent Bo
 ### Atores
 | Ator | Papel |
 |---|---|
-| **Gestor** (da Spread) | Cadastra dados, controla/ajusta horas, gera e imprime o relatório. É o único ator da entrega atual. |
+| **Gestor**  | Cadastra dados, controla/ajusta horas, gera e imprime o relatório. É o único ator da entrega atual. |
 | **Cliente** (gestor do cliente) | Consulta o relatório e valida/contesta horas por funcionário (fora do escopo atual). |
 
 ---
