@@ -29,6 +29,13 @@ public class ProjetoService {
                 .collect(Collectors.toList());
     }
 
+    // Novo método para buscar projetos por clienteId
+    public List<ProjetoDTO> findByClienteId(Long clienteId) {
+        return projetoRepository.findByClienteId(clienteId).stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
     public Optional<ProjetoDTO> findById(Long id) {
         return projetoRepository.findById(id)
                 .map(this::convertToDto);

@@ -1,85 +1,244 @@
-<div class="container">
-  <h2>Controlar Horas Trabalhadas</h2>
-
-  <form [formGroup]="filtroForm" (ngSubmit)="gerarRelatorio()" class="filter-form">
-    <div class="form-group">
-      <label for="dataInicial">Data Inicial:</label>
-      <input type="date" id="dataInicial" formControlName="dataInicial" class="form-control">
-      <div *ngIf="filtroForm.get('dataInicial')?.invalid && filtroForm.get('dataInicial')?.touched" class="error-message">
-        Data Inicial é obrigatória.
+<div class="controlar-horas-container">
+  <!-- Page Header -->
+  <div class="card page-header-card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-primary-subtle text-primary fw-semibold px-2.5 py-1">
+              <i class="bi bi-clock-history me-1"></i> Caso de Uso CDU007
+            </span>
+            <span class="badge bg-success-subtle text-success fw-medium px-2 py-1">
+              Fase 2 · MVP
+            </span>
+          </div>
+          <h2 class="page-title mb-1">Controlar Horas Trabalhadas</h2>
+          <p class="text-muted small mb-0">
+            Filtre por período, cliente e projeto para gerar a apuração automatizada com deduções de feriados e licenças.
+          </p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a routerLink="/horas-trabalhadas" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-clock me-1"></i> Ver Registros Salvos
+          </a>
+        </div>
       </div>
     </div>
-
-    <div class="form-group">
-      <label for="dataFinal">Data Final:</label>
-      <input type="date" id="dataFinal" formControlName="dataFinal" class="form-control">
-      <div *ngIf="filtroForm.get('dataFinal')?.invalid && filtroForm.get('dataFinal')?.touched" class="error-message">
-        Data Final é obrigatória.
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="clienteId">Cliente:</label>
-      <select id="clienteId" formControlName="clienteId" class="form-control">
-        <option value="">Selecione um Cliente</option>
-        <option *ngFor="let cliente of clientes" [value]="cliente.id">{{ cliente.nome }}</option>
-      </select>
-      <div *ngIf="filtroForm.get('clienteId')?.invalid && filtroForm.get('clienteId')?.touched" class="error-message">
-        Cliente é obrigatório.
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="projetoId">Projeto:</label>
-      <select id="projetoId" formControlName="projetoId" class="form-control">
-        <option value="">Selecione um Projeto</option>
-        <option *ngFor="let projeto of projetos" [value]="projeto.id">{{ projeto.nome }}</option>
-      </select>
-      <div *ngIf="filtroForm.get('projetoId')?.invalid && filtroForm.get('projetoId')?.touched" class="error-message">
-        Projeto é obrigatório.
-      </div>
-    </div>
-
-    <button type="submit" [disabled]="filtroForm.invalid" class="btn btn-primary">Gerar Relatório</button>
-  </form>
-
-  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
-    {{ errorMessage }}
   </div>
 
-  <div *ngIf="relatorioHoras.length > 0" class="report-section mt-4">
-    <h3>Relatório de Horas Trabalhadas</h3>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th><input type="checkbox" (change)="toggleSelectAll($event)"></th>
-          <th>Funcionário</th>
-          <th>CPF</th>
-          <th>Horas Calculadas</th>
-          <th>Horas Editáveis</th>
-          <th>Valor Hora</th>
-          <th>Valor Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let funcionario of relatorioHoras">
-          <td><input type="checkbox" [(ngModel)]="funcionario.selected"></td>
-          <td>{{ funcionario.funcionarioNome }}</td>
-          <td>{{ funcionario.cpf }}</td>
-          <td>{{ funcionario.horasTrabalhadasCalculadas }}</td>
-          <td>
-            <input type="number" [(ngModel)]="funcionario.editableHoras" (ngModelChange)="onHorasEditadas(funcionario)" class="form-control form-control-sm">
-          </td>
-          <td>{{ funcionario.valorHora | currency:'BRL':'symbol':'1.2-2' }}</td>
-          <td>{{ funcionario.valorTotal | currency:'BRL':'symbol':'1.2-2' }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- Filter Card -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-bottom py-3">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-funnel-fill text-primary"></i>
+        <h5 class="card-title mb-0 fs-6 fw-bold">Parâmetros de Apuração</h5>
+      </div>
+    </div>
+    <div class="card-body p-4">
+      <form [formGroup]="filtroForm" (ngSubmit)="gerarRelatorio()">
+        <div class="row g-3">
+          <!-- Data Inicial -->
+          <div class="col-md-6 col-lg-3">
+            <label for="dataInicial" class="form-label fw-semibold small text-slate-700">
+              <i class="bi bi-calendar-event me-1 text-muted"></i> Data Inicial:
+            </label>
+            <input type="date" id="dataInicial" formControlName="dataInicial" class="form-control" [class.is-invalid]="filtroForm.get('dataInicial')?.invalid && filtroForm.get('dataInicial')?.touched">
+            <div *ngIf="filtroForm.get('dataInicial')?.invalid && filtroForm.get('dataInicial')?.touched" class="invalid-feedback small">
+              Data Inicial é obrigatória.
+            </div>
+          </div>
 
-    <div class="report-actions">
-      <button class="btn btn-success mr-2" (click)="salvarHoras()">Salvar</button>
-      <button class="btn btn-danger mr-2" (click)="excluirHoras()">Excluir Selecionados</button>
-      <button class="btn btn-info" (click)="imprimirRelatorio()">Imprimir PDF</button>
+          <!-- Data Final -->
+          <div class="col-md-6 col-lg-3">
+            <label for="dataFinal" class="form-label fw-semibold small text-slate-700">
+              <i class="bi bi-calendar-check me-1 text-muted"></i> Data Final:
+            </label>
+            <input type="date" id="dataFinal" formControlName="dataFinal" class="form-control" [class.is-invalid]="filtroForm.get('dataFinal')?.invalid && filtroForm.get('dataFinal')?.touched">
+            <div *ngIf="filtroForm.get('dataFinal')?.invalid && filtroForm.get('dataFinal')?.touched" class="invalid-feedback small">
+              Data Final é obrigatória.
+            </div>
+          </div>
+
+          <!-- Cliente -->
+          <div class="col-md-6 col-lg-3">
+            <label for="clienteId" class="form-label fw-semibold small text-slate-700">
+              <i class="bi bi-building me-1 text-muted"></i> Cliente:
+            </label>
+            <select id="clienteId" formControlName="clienteId" class="form-select" [class.is-invalid]="filtroForm.get('clienteId')?.invalid && filtroForm.get('clienteId')?.touched">
+              <option value="">Selecione o Cliente</option>
+              <option *ngFor="let cliente of clientes" [value]="cliente.id">{{ cliente.nome }}</option>
+            </select>
+            <div *ngIf="filtroForm.get('clienteId')?.invalid && filtroForm.get('clienteId')?.touched" class="invalid-feedback small">
+              Cliente é obrigatório.
+            </div>
+          </div>
+
+          <!-- Projeto -->
+          <div class="col-md-6 col-lg-3">
+            <label for="projetoId" class="form-label fw-semibold small text-slate-700">
+              <i class="bi bi-kanban me-1 text-muted"></i> Projeto:
+            </label>
+            <select id="projetoId" formControlName="projetoId" class="form-select" [class.is-invalid]="filtroForm.get('projetoId')?.invalid && filtroForm.get('projetoId')?.touched">
+              <option value="">Selecione o Projeto</option>
+              <option *ngFor="let projeto of projetos" [value]="projeto.id">{{ projeto.nome }}</option>
+            </select>
+            <div *ngIf="filtroForm.get('projetoId')?.invalid && filtroForm.get('projetoId')?.touched" class="invalid-feedback small">
+              Projeto é obrigatório.
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4 pt-2 border-top">
+          <button type="submit" [disabled]="filtroForm.invalid || isLoadingRelatorio" class="btn btn-primary px-4 fw-semibold d-inline-flex align-items-center gap-2">
+            <span *ngIf="isLoadingRelatorio" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <i *ngIf="!isLoadingRelatorio" class="bi bi-gear-wide-connected"></i>
+            <span>{{ isLoadingRelatorio ? 'Processando Horas...' : 'Gerar Relatório de Horas' }}</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Feedback Alert -->
+  <div *ngIf="errorMessage" class="alert alert-dismissible fade show shadow-sm" [ngClass]="errorMessage.includes('sucesso') ? 'alert-success border-success' : 'alert-danger border-danger'" role="alert">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi fs-5" [ngClass]="errorMessage.includes('sucesso') ? 'bi-check-circle-fill text-success' : 'bi-exclamation-triangle-fill text-danger'"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div *ngIf="relatorioHoras.length > 0" class="report-section mt-4">
+    <!-- Quick Totals Cards -->
+    <div class="row g-3 mb-3">
+      <div class="col-sm-4">
+        <div class="card border-0 shadow-sm p-3 bg-white">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <span class="text-muted small fw-semibold text-uppercase">Consultores Apurados</span>
+              <h4 class="fw-bold mb-0 text-slate-800">{{ relatorioHoras.length }}</h4>
+            </div>
+            <div class="icon-pill bg-blue-subtle text-primary">
+              <i class="bi bi-people-fill"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4">
+        <div class="card border-0 shadow-sm p-3 bg-white">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <span class="text-muted small fw-semibold text-uppercase">Total de Horas</span>
+              <h4 class="fw-bold mb-0 text-slate-800">{{ totalHorasGeral }}h</h4>
+            </div>
+            <div class="icon-pill bg-cyan-subtle text-info">
+              <i class="bi bi-clock-history"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-4">
+        <div class="card border-0 shadow-sm p-3 bg-white">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <span class="text-muted small fw-semibold text-uppercase">Valor Total Faturável</span>
+              <h4 class="fw-bold mb-0 text-success">{{ totalValorGeral | currency:'BRL':'symbol':'1.2-2' }}</h4>
+            </div>
+            <div class="icon-pill bg-success-subtle text-success">
+              <i class="bi bi-cash-stack"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Results Table -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white border-bottom py-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-table text-primary"></i>
+          <h5 class="card-title mb-0 fs-6 fw-bold">Horas Calculadas por Consultor</h5>
+          <span class="badge bg-secondary-subtle text-dark ms-2">{{ relatorioHoras.length }} registros</span>
+        </div>
+        <div class="small text-muted">
+          <i class="bi bi-info-circle me-1"></i> As horas na coluna <strong>Horas Editáveis</strong> podem ser ajustadas manualmente.
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 44px;" class="text-center">
+                <input type="checkbox" class="form-check-input" (change)="toggleSelectAll($event)" title="Selecionar Todos">
+              </th>
+              <th>Funcionário</th>
+              <th>CPF</th>
+              <th class="text-center">Horas Calculadas</th>
+              <th style="min-width: 140px;">Horas Editáveis</th>
+              <th class="text-end">Valor Hora</th>
+              <th class="text-end">Valor Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let funcionario of relatorioHoras" [class.table-active]="funcionario.selected">
+              <td class="text-center">
+                <input type="checkbox" class="form-check-input" [(ngModel)]="funcionario.selected">
+              </td>
+              <td class="fw-semibold text-slate-800">
+                <i class="bi bi-person-circle me-1.5 text-muted"></i>
+                {{ funcionario.funcionarioNome }}
+              </td>
+              <td class="text-muted small">{{ funcionario.cpf }}</td>
+              <td class="text-center">
+                <span class="badge bg-light text-dark border px-2.5 py-1">
+                  {{ funcionario.horasTrabalhadasCalculadas }}h
+                </span>
+              </td>
+              <td>
+                <div class="input-group input-group-sm" style="max-width: 120px;">
+                  <input type="number" [(ngModel)]="funcionario.editableHoras" (ngModelChange)="onHorasEditadas(funcionario)" class="form-control text-center fw-semibold border-primary-subtle" min="0" step="1">
+                  <span class="input-group-text bg-light text-muted">h</span>
+                </div>
+              </td>
+              <td class="text-end text-muted">{{ funcionario.valorHora | currency:'BRL':'symbol':'1.2-2' }}</td>
+              <td class="text-end fw-bold text-success">{{ funcionario.valorTotal | currency:'BRL':'symbol':'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Action Toolbar -->
+      <div class="card-footer bg-light border-top py-3">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+          <div class="small text-muted">
+            <span *ngIf="totalSelecionados > 0" class="text-primary fw-medium">
+              <i class="bi bi-check2-square me-1"></i> {{ totalSelecionados }} consultor(es) selecionado(s)
+            </span>
+            <span *ngIf="totalSelecionados === 0">
+              Selecione itens para exclusão em massa se necessário.
+            </span>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1.5" (click)="excluirHoras()" [disabled]="totalSelecionados === 0">
+              <i class="bi bi-trash"></i>
+              <span>Excluir Selecionados</span>
+            </button>
+            <button class="btn btn-success btn-sm d-inline-flex align-items-center gap-1.5" (click)="salvarHoras()" [disabled]="isSaving">
+              <span *ngIf="isSaving" class="spinner-border spinner-border-sm"></span>
+              <i *ngIf="!isSaving" class="bi bi-check2-circle"></i>
+              <span>Salvar Horas</span>
+            </button>
+            <button class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1.5 shadow-sm" (click)="imprimirRelatorio()">
+              <i class="bi bi-file-earmark-pdf"></i>
+              <span>Imprimir Relatório PDF</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

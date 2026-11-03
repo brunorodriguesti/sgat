@@ -1,0 +1,29 @@
+Para executar o projeto:
+1 - Instalar o MySQL / Workbench
+2 - Criar o banco de dados:  create database sgat
+3 - Precisa ter Java (JDK) 
+4 - Usar a IDE InteliJ IDEA (Community)
+5 - Ter NodeJS instalado
+6 - VS Code
+7 - Git
+
+---------------------
+8 - Baixar o projeto do GitHub: 
+https://github.com/brunorodriguesti/sgat/
+9 - Abriu o InteliJ IDEA com a pasta do projeto: sgat/api/sgat
+10 - Em application.properties colocar a senha do MySQL
+
+Para iniciar o projeto Java:
+Ir na classe: SgatApplication.java
+
+
+A parte de tela (Angula)
+11 - Abrir o VS Code e a pasta: sgat\sgat-ui
+12 - Abrir a guia Terminal no VsCode
+13 - Para instalar o projeto Digitar:  npm install 
+14 - Para executar o projeto: ng serve
+15 - Abrir o link no browser: http://localhost:4200/
+
+
+Dica usar Antigravity CLI
+

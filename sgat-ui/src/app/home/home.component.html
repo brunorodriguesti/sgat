@@ -1,1 +1,342 @@
-<h1>SGAT - Sistema de Gerenciamento de Alocação de Talentos</h1>
+<div class="dashboard-wrapper">
+  <!-- Hero Banner -->
+  <div class="hero-card">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <span class="badge bg-primary-subtle text-primary fw-semibold px-2.5 py-1.5 rounded-pill">
+            <i class="bi bi-stars me-1"></i> Talent Body · Spread Tecnologia
+          </span>
+          <span class="badge bg-success-subtle text-success fw-semibold px-2.5 py-1.5 rounded-pill">
+            <i class="bi bi-check-circle-fill me-1"></i> Sistema Operacional
+          </span>
+        </div>
+        <h1 class="hero-title">SGAT – Gestão de Alocação de Talentos</h1>
+        <p class="hero-desc">
+          Plataforma centralizada para gestão de consultores, parametrização de calendários e apuração automatizada de horas trabalhadas para faturamento.
+        </p>
+        <div class="d-flex flex-wrap gap-2 pt-2">
+          <a routerLink="/controlar-horas" class="btn btn-primary px-3.5 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm">
+            <i class="bi bi-lightning-charge-fill"></i>
+            <span>Iniciar Apuração de Horas (CDU007)</span>
+          </a>
+          <a routerLink="/funcionarios" class="btn btn-outline-secondary px-3.5 py-2 fw-semibold d-inline-flex align-items-center gap-2">
+            <i class="bi bi-people-fill"></i>
+            <span>Ver Consultores</span>
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-4 d-none d-lg-flex justify-content-center">
+        <div class="hero-illustration">
+          <i class="bi bi-briefcase-fill text-primary display-1 opacity-75"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Metrics Row -->
+  <div class="row g-3 mb-4">
+    <!-- Consultores -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="stat-body">
+          <div>
+            <span class="stat-label">Consultores Alocados</span>
+            <h3 class="stat-value">
+              <span *ngIf="totalFuncionarios !== null">{{ totalFuncionarios }}</span>
+              <span *ngIf="totalFuncionarios === null" class="spinner-border spinner-border-sm text-primary"></span>
+            </h3>
+            <span class="stat-sub">Quadro de talentos</span>
+          </div>
+          <div class="stat-icon-wrapper bg-blue">
+            <i class="bi bi-people-fill"></i>
+          </div>
+        </div>
+        <div class="stat-footer">
+          <a routerLink="/funcionarios" class="stat-link">
+            <span>Gerenciar equipe</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clientes -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="stat-body">
+          <div>
+            <span class="stat-label">Clientes Parceiros</span>
+            <h3 class="stat-value">
+              <span *ngIf="totalClientes !== null">{{ totalClientes }}</span>
+              <span *ngIf="totalClientes === null" class="spinner-border spinner-border-sm text-info"></span>
+            </h3>
+            <span class="stat-sub">Empresas atendidas</span>
+          </div>
+          <div class="stat-icon-wrapper bg-cyan">
+            <i class="bi bi-building"></i>
+          </div>
+        </div>
+        <div class="stat-footer">
+          <a routerLink="/clientes" class="stat-link">
+            <span>Ver clientes</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projetos -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card">
+        <div class="stat-body">
+          <div>
+            <span class="stat-label">Projetos Ativos</span>
+            <h3 class="stat-value">
+              <span *ngIf="totalProjetos !== null">{{ totalProjetos }}</span>
+              <span *ngIf="totalProjetos === null" class="spinner-border spinner-border-sm text-warning"></span>
+            </h3>
+            <span class="stat-sub">Contratos vigentes</span>
+          </div>
+          <div class="stat-icon-wrapper bg-amber">
+            <i class="bi bi-kanban"></i>
+          </div>
+        </div>
+        <div class="stat-footer">
+          <a routerLink="/projetos" class="stat-link">
+            <span>Ver projetos</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Apuração Status -->
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="stat-card border-primary-subtle">
+        <div class="stat-body">
+          <div>
+            <span class="stat-label text-primary">Controle de Horas</span>
+            <h3 class="stat-value text-primary">CDU007</h3>
+            <span class="stat-sub text-success fw-medium">
+              <i class="bi bi-check-circle me-1"></i> Pronto para cálculo
+            </span>
+          </div>
+          <div class="stat-icon-wrapper bg-indigo">
+            <i class="bi bi-clock-history"></i>
+          </div>
+        </div>
+        <div class="stat-footer bg-primary-subtle border-0">
+          <a routerLink="/controlar-horas" class="stat-link text-primary fw-semibold">
+            <span>Acessar fechamento</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Modules Grid -->
+  <h2 class="section-title">
+    <i class="bi bi-grid-fill me-2 text-primary"></i> Módulos do Sistema
+  </h2>
+
+  <div class="row g-3 mb-4">
+    <!-- Card 1: Controlar Horas -->
+    <div class="col-md-6 col-lg-4">
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon-badge bg-primary">
+            <i class="bi bi-calculator"></i>
+          </div>
+          <div>
+            <span class="badge bg-primary text-white">MVP Principal</span>
+            <h3 class="module-title mt-1">Controlar Horas do Mês</h3>
+          </div>
+        </div>
+        <p class="module-description">
+          Calcula automaticamente as horas úteis trabalhadas no período, descontando feriados e afastamentos/licenças por funcionário.
+        </p>
+        <div class="module-actions">
+          <a routerLink="/controlar-horas" class="btn btn-sm btn-primary">
+            <i class="bi bi-arrow-right-circle me-1"></i> Acessar Apuração
+          </a>
+          <a routerLink="/horas-trabalhadas" class="btn btn-sm btn-outline-secondary">
+            Histórico
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Funcionários -->
+    <div class="col-md-6 col-lg-4">
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon-badge bg-success">
+            <i class="bi bi-person-badge"></i>
+          </div>
+          <div>
+            <span class="badge bg-secondary-subtle text-dark">Cadastro</span>
+            <h3 class="module-title mt-1">Quadro de Funcionários</h3>
+          </div>
+        </div>
+        <p class="module-description">
+          Gerencie consultores, matrículas, vínculo a projetos, perfil profissional, valor/hora e território sindical.
+        </p>
+        <div class="module-actions">
+          <a routerLink="/funcionarios" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-list me-1"></i> Ver Lista
+          </a>
+          <a routerLink="/funcionarios/novo" class="btn btn-sm btn-outline-success">
+            <i class="bi bi-plus-lg me-1"></i> Novo Consultor
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Clientes & Projetos -->
+    <div class="col-md-6 col-lg-4">
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon-badge bg-info text-white">
+            <i class="bi bi-buildings"></i>
+          </div>
+          <div>
+            <span class="badge bg-secondary-subtle text-dark">Cadastro</span>
+            <h3 class="module-title mt-1">Clientes & Projetos</h3>
+          </div>
+        </div>
+        <p class="module-description">
+          Estruture a carteira de empresas parceiras e os respectivos projetos contratados onde os talentos estão alocados.
+        </p>
+        <div class="module-actions">
+          <a routerLink="/clientes" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-building me-1"></i> Clientes
+          </a>
+          <a routerLink="/projetos" class="btn btn-sm btn-outline-info">
+            <i class="bi bi-kanban me-1"></i> Projetos
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Férias e Licenças -->
+    <div class="col-md-6 col-lg-4">
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon-badge bg-warning text-dark">
+            <i class="bi bi-calendar-range"></i>
+          </div>
+          <div>
+            <span class="badge bg-secondary-subtle text-dark">Apuração</span>
+            <h3 class="module-title mt-1">Férias & Licenças</h3>
+          </div>
+        </div>
+        <p class="module-description">
+          Controle períodos de férias e licenças dos funcionários para cálculo automático e exato de horas faturáveis.
+        </p>
+        <div class="module-actions">
+          <a routerLink="/ferias-licencas" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-list me-1"></i> Listar Registros
+          </a>
+          <a routerLink="/ferias-licencas/novo" class="btn btn-sm btn-outline-warning">
+            <i class="bi bi-plus-lg me-1"></i> Nova Licença
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5: Feriados e Territórios -->
+    <div class="col-md-6 col-lg-4">
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon-badge bg-danger">
+            <i class="bi bi-calendar-x"></i>
+          </div>
+          <div>
+            <span class="badge bg-secondary-subtle text-dark">Parâmetros</span>
+            <h3 class="module-title mt-1">Feriados & Territórios</h3>
+          </div>
+        </div>
+        <p class="module-description">
+          Parametrização de feriados nacionais, estaduais e municipais cruzados com os territórios dos sindicatos.
+        </p>
+        <div class="module-actions">
+          <a routerLink="/feriados" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-calendar3 me-1"></i> Feriados
+          </a>
+          <a routerLink="/configuracoes/afastamentos" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-gear me-1"></i> Regras
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6: Perfis Profissionais -->
+    <div class="col-md-6 col-lg-4">
+      <div class="module-card">
+        <div class="module-header">
+          <div class="module-icon-badge bg-secondary">
+            <i class="bi bi-person-lines-fill"></i>
+          </div>
+          <div>
+            <span class="badge bg-secondary-subtle text-dark">Tabelas</span>
+            <h3 class="module-title mt-1">Perfis Profissionais</h3>
+          </div>
+        </div>
+        <p class="module-description">
+          Definição dos papéis (Dev, DevOps, QA, Scrum Master, etc.), valores hora padrão e cargas horárias de referência.
+        </p>
+        <div class="module-actions">
+          <a routerLink="/perfis" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-list me-1"></i> Ver Perfis
+          </a>
+          <a routerLink="/perfis/novo" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-plus-lg me-1"></i> Novo Perfil
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Operational Flow Guide -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-3 bg-white">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h3 class="h5 fw-bold mb-0 text-slate-800">
+        <i class="bi bi-arrow-repeat text-primary me-2"></i> Fluxo do Ciclo de Fechamento de Horas (CDU007)
+      </h3>
+      <span class="badge bg-light text-muted border">Processo Operacional</span>
+    </div>
+
+    <div class="row g-3 text-center">
+      <div class="col-md-3">
+        <div class="workflow-step">
+          <div class="step-number">1</div>
+          <h4 class="step-title">Cadastros Base</h4>
+          <p class="step-desc">Clientes, Projetos e Consultores alocados devidamente registrados e ativos.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="workflow-step">
+          <div class="step-number">2</div>
+          <h4 class="step-title">Parâmetros do Mês</h4>
+          <p class="step-desc">Feriados do período e férias/licenças registradas para dedução correta.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="workflow-step highlight">
+          <div class="step-number bg-primary text-white">3</div>
+          <h4 class="step-title text-primary">Apuração Automática</h4>
+          <p class="step-desc">O SGAT calcula horas úteis e valor faturável com base na taxa/hora do consultor.</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="workflow-step">
+          <div class="step-number">4</div>
+          <h4 class="step-title">Validação & PDF</h4>
+          <p class="step-desc">Ajuste manual se necessário, persistência das horas e emissão do relatório em PDF.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

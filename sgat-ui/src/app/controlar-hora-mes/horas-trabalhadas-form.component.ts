@@ -11,7 +11,7 @@ import { Funcionario, FuncionarioService } from '../funcionario/funcionario.serv
 export class HorasTrabalhadasFormComponent implements OnInit {
   horasTrabalhadas: HorasTrabalhadas = {
     dataTrabalho: '',
-    horasTrabalhadas: '00:00:00',
+    horasTrabalhadas: 0, // Alterado para 0
     funcionarioId: 0,
     valor: 0
   };

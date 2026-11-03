@@ -21,6 +21,8 @@ export class ControlarHoraMesComponent implements OnInit {
   projetos: Projeto[] = [];
   relatorioHoras: RelatorioHorasFuncionarioUI[] = [];
   errorMessage: string = '';
+  isLoadingRelatorio: boolean = false;
+  isSaving: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -39,6 +41,18 @@ export class ControlarHoraMesComponent implements OnInit {
 
     this.loadClientes();
     this.onChanges();
+  }
+
+  get totalValorGeral(): number {
+    return this.relatorioHoras.reduce((acc, curr) => acc + (curr.valorTotal || 0), 0);
+  }
+
+  get totalHorasGeral(): number {
+    return this.relatorioHoras.reduce((acc, curr) => acc + (curr.editableHoras ?? curr.horasTrabalhadasCalculadas ?? 0), 0);
+  }
+
+  get totalSelecionados(): number {
+    return this.relatorioHoras.filter(f => f.selected).length;
   }
 
   onChanges(): void {
@@ -63,9 +77,9 @@ export class ControlarHoraMesComponent implements OnInit {
   }
 
   loadProjetosByCliente(clienteId: number): void {
-    this.projetoService.getAllProjetos().subscribe({
+    this.projetoService.getProjetosByClienteId(clienteId).subscribe({
       next: (data) => {
-        this.projetos = data.filter(p => p.clienteId === clienteId);
+        this.projetos = data;
         this.filtroForm.get('projetoId')?.setValue(''); // Reset project selection
       },
       error: (err) => {
@@ -89,8 +103,11 @@ export class ControlarHoraMesComponent implements OnInit {
       return;
     }
 
+    this.isLoadingRelatorio = true;
+
     this.horasTrabalhadasService.gerarRelatorioHoras(dataInicial, dataFinal, clienteId, projetoId).subscribe({
       next: (data) => {
+        this.isLoadingRelatorio = false;
         this.relatorioHoras = data.map(item => ({
           ...item,
           editableHoras: item.horasTrabalhadasCalculadas, // Initialize editable hours
@@ -101,6 +118,7 @@ export class ControlarHoraMesComponent implements OnInit {
         }
       },
       error: (err) => {
+        this.isLoadingRelatorio = false;
         console.error('Erro ao gerar relatório', err);
         this.errorMessage = err.error?.message || 'Erro ao gerar relatório de horas.';
       }
@@ -125,13 +143,16 @@ export class ControlarHoraMesComponent implements OnInit {
     const horasParaSalvar: HorasTrabalhadas[] = this.relatorioHoras.map(f => ({
       id: f.id, // Include ID if it exists for update
       dataTrabalho: dataFinal, // As per documentation, "data trabalho final"
-      horasTrabalhadas: f.editableHoras ? f.editableHoras.toString() : f.horasTrabalhadasCalculadas.toString(), // Use editable if present, else calculated
+      horasTrabalhadas: f.editableHoras !== undefined ? f.editableHoras : f.horasTrabalhadasCalculadas, // Use editable if present, else calculated
       funcionarioId: f.funcionarioId,
       valor: f.valorTotal
     }));
 
+    this.isSaving = true;
+
     this.horasTrabalhadasService.saveHorasTrabalhadasList(horasParaSalvar).subscribe({
       next: (response) => {
+        this.isSaving = false;
         console.log('Horas salvas com sucesso!', response);
         this.errorMessage = 'Horas salvas com sucesso!';
         // Update IDs of saved items in the UI if they were new
@@ -143,6 +164,7 @@ export class ControlarHoraMesComponent implements OnInit {
         });
       },
       error: (err) => {
+        this.isSaving = false;
         console.error('Erro ao salvar horas', err);
         this.errorMessage = err.error?.message || 'Erro ao salvar horas.';
       }
@@ -150,7 +172,6 @@ export class ControlarHoraMesComponent implements OnInit {
   }
 
   editarHoras(): void {
-    // Editing is done inline, this button might trigger a save or just be a visual cue
     this.errorMessage = 'Edição é feita diretamente na tabela. Use o botão Salvar para persistir as mudanças.';
   }
 
@@ -169,7 +190,7 @@ export class ControlarHoraMesComponent implements OnInit {
         next: () => {
           console.log('Horas excluídas com sucesso!', idsToDelete);
           this.relatorioHoras = this.relatorioHoras.filter(f => !f.selected);
-          this.errorMessage = `Horas excluídas com sucesso. ${localDeleteCount} itens não salvos removidos localmente.`;
+          this.errorMessage = `Horas excluídas com sucesso. ${localDeleteCount > 0 ? localDeleteCount + ' itens locais removidos.' : ''}`;
         },
         error: (err) => {
           console.error('Erro ao excluir horas', err);
@@ -191,7 +212,6 @@ export class ControlarHoraMesComponent implements OnInit {
       return;
     }
 
-    // Prepare data for PDF generation (backend expects RelatorioHorasFuncionario, not RelatorioHorasFuncionarioUI)
     const reportDataForPdf: RelatorioHorasFuncionario[] = this.relatorioHoras.map(item => ({
       funcionarioId: item.funcionarioId,
       funcionarioNome: item.funcionarioNome,

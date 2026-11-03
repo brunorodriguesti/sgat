@@ -1,29 +1,70 @@
 <div class="container">
-  <h2>Lista de Feriados</h2>
-  <button (click)="newFeriado()" class="btn btn-primary mb-3">Novo Feriado</button>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Data</th>
-        <th>Tipo Feriado</th>
-        <th>Território</th>
-        <th>Descrição</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let feriado of feriados">
-        <td>{{ feriado.id }}</td>
-        <td>{{ feriado.data }}</td>
-        <td>{{ feriado.tipoFeriado }}</td>
-        <td>{{ feriado.territorio }}</td>
-        <td>{{ feriado.descricao }}</td>
-        <td>
-          <button (click)="editFeriado(feriado.id!)" class="btn btn-info btn-sm me-2">Editar</button>
-          <button (click)="deleteFeriado(feriado.id!)" class="btn btn-danger btn-sm">Excluir</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom py-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div>
+        <h2 class="h5 fw-bold mb-0 text-slate-800">
+          <i class="bi bi-calendar-x text-primary me-2"></i> Calendário de Feriados
+        </h2>
+        <span class="text-muted small">Feriados considerados para desconto de horas nos cálculos</span>
+      </div>
+      <button (click)="newFeriado()" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1.5 shadow-sm">
+        <i class="bi bi-calendar-plus"></i>
+        <span>Novo Feriado</span>
+      </button>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 80px;">ID</th>
+              <th>Data</th>
+              <th>Tipo de Feriado</th>
+              <th>Território / Abrangência</th>
+              <th>Descrição</th>
+              <th style="width: 180px;" class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let feriado of feriados">
+              <td class="text-muted fw-semibold">#{{ feriado.id }}</td>
+              <td class="fw-semibold text-slate-800">
+                <i class="bi bi-calendar3 me-1.5 text-primary opacity-75"></i>
+                {{ feriado.data }}
+              </td>
+              <td>
+                <span class="badge bg-secondary-subtle text-dark border">
+                  {{ feriado.tipoFeriado }}
+                </span>
+              </td>
+              <td>
+                <span class="badge bg-light text-dark border">
+                  <i class="bi bi-geo-alt me-1 text-muted"></i>
+                  {{ feriado.territorio }}
+                </span>
+              </td>
+              <td class="text-slate-700">{{ feriado.descricao }}</td>
+              <td class="text-end">
+                <button (click)="editFeriado(feriado.id!)" class="btn btn-outline-primary btn-sm me-1.5" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                  <span class="d-none d-md-inline ms-1">Editar</span>
+                </button>
+                <button (click)="deleteFeriado(feriado.id!)" class="btn btn-outline-danger btn-sm" title="Excluir">
+                  <i class="bi bi-trash"></i>
+                  <span class="d-none d-md-inline ms-1">Excluir</span>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="!feriados || feriados.length === 0">
+              <td colspan="6" class="text-center py-4 text-muted">
+                <i class="bi bi-inbox fs-3 d-block mb-2 text-muted"></i>
+                Nenhum feriado cadastrado no momento.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

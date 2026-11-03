@@ -17,8 +17,13 @@ public class ProjetoController {
     private ProjetoService projetoService;
 
     @GetMapping
-    public ResponseEntity<List<ProjetoDTO>> getAllProjetos() {
-        List<ProjetoDTO> projetos = projetoService.findAll();
+    public ResponseEntity<List<ProjetoDTO>> getAllProjetos(@RequestParam(required = false) Long clienteId) {
+        List<ProjetoDTO> projetos;
+        if (clienteId != null) {
+            projetos = projetoService.findByClienteId(clienteId);
+        } else {
+            projetos = projetoService.findAll();
+        }
         return ResponseEntity.ok(projetos);
     }
 

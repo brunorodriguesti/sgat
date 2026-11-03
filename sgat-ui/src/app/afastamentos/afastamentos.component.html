@@ -1,1 +1,61 @@
-<p>afastamentos works!</p>
+<div class="container py-2">
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-primary-subtle text-primary fw-semibold px-2 py-1">
+            Configurações & Regras
+          </span>
+        </div>
+        <h3 class="h5 fw-bold mb-0 text-slate-800">
+          <i class="bi bi-shield-check text-primary me-2"></i> Parâmetros de Afastamentos & Deduções
+        </h3>
+      </div>
+      <a routerLink="/ferias-licencas" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-calendar-event me-1"></i> Férias & Licenças
+      </a>
+    </div>
+
+    <p class="text-muted small">
+      O módulo de cálculo de horas (CDU007) aplica regras automatizadas de dedução sobre as horas trabalhadas previstas no período. Abaixo estão as diretrizes de apuração:
+    </p>
+
+    <div class="row g-3 mt-1">
+      <div class="col-md-4">
+        <div class="p-3 rounded-3 border bg-light h-100">
+          <div class="d-flex align-items-center gap-2 mb-2 text-primary fw-semibold">
+            <i class="bi bi-calendar-x fs-5"></i>
+            <span>Feriados Calendário</span>
+          </div>
+          <p class="small text-muted mb-0">
+            Feriados nacionais, estaduais e municipais cadastrados são deduzidos automaticamente das horas faturáveis, respeitando o território do sindicato do consultor.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-3 rounded-3 border bg-light h-100">
+          <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-semibold">
+            <i class="bi bi-sun fs-5"></i>
+            <span>Férias Regulamentares</span>
+          </div>
+          <p class="small text-muted mb-0">
+            Períodos de gozo de férias são abatidos considerando os dias úteis dentro do intervalo informado para o consultor.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-3 rounded-3 border bg-light h-100">
+          <div class="d-flex align-items-center gap-2 mb-2 text-danger fw-semibold">
+            <i class="bi bi-bandaid fs-5"></i>
+            <span>Licenças & Atestados</span>
+          </div>
+          <p class="small text-muted mb-0">
+            Afastamentos médicos e licenças legais justificadas são deduzidos conforme as horas registradas na apuração mensal.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

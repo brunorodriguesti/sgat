@@ -1,23 +1,55 @@
 <div class="container">
-  <h2>Lista de Clientes</h2>
-  <button (click)="newCliente()" class="btn btn-primary mb-3">Novo Cliente</button>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nome</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let cliente of clientes">
-        <td>{{ cliente.id }}</td>
-        <td>{{ cliente.nome }}</td>
-        <td>
-          <button (click)="editCliente(cliente.id!)" class="btn btn-info btn-sm me-2">Editar</button>
-          <button (click)="deleteCliente(cliente.id!)" class="btn btn-danger btn-sm">Excluir</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom py-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div>
+        <h2 class="h5 fw-bold mb-0 text-slate-800">
+          <i class="bi bi-building text-primary me-2"></i> Lista de Clientes
+        </h2>
+        <span class="text-muted small">Gerencie as empresas contratantes atendidas pelo SGAT</span>
+      </div>
+      <button (click)="newCliente()" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1.5 shadow-sm">
+        <i class="bi bi-plus-lg"></i>
+        <span>Novo Cliente</span>
+      </button>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 90px;">ID</th>
+              <th>Nome da Empresa</th>
+              <th style="width: 200px;" class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cliente of clientes">
+              <td class="text-muted fw-semibold">#{{ cliente.id }}</td>
+              <td class="fw-semibold text-slate-800">
+                <i class="bi bi-building me-2 text-muted"></i>
+                {{ cliente.nome }}
+              </td>
+              <td class="text-end">
+                <button (click)="editCliente(cliente.id!)" class="btn btn-outline-primary btn-sm me-1.5" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                  <span class="d-none d-md-inline ms-1">Editar</span>
+                </button>
+                <button (click)="deleteCliente(cliente.id!)" class="btn btn-outline-danger btn-sm" title="Excluir">
+                  <i class="bi bi-trash"></i>
+                  <span class="d-none d-md-inline ms-1">Excluir</span>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="!clientes || clientes.length === 0">
+              <td colspan="3" class="text-center py-4 text-muted">
+                <i class="bi bi-inbox fs-3 d-block mb-2 text-muted"></i>
+                Nenhum cliente cadastrado no momento.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
