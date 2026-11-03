@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +15,7 @@ public class HorasTrabalhadasDTO {
     private LocalDate dataRelatorio;
     private LocalDate dataInicio;
     private LocalDate dataFim;
-    private LocalTime horasTrabalhadas;
+    private BigDecimal horasTrabalhadas;
     private Long funcionarioId;
     private String funcionarioNome; // Para exibir o nome do funcionário
     private BigDecimal valor;

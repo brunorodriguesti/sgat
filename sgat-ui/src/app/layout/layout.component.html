@@ -1,41 +1,259 @@
-<div class="container">
-  <nav class="sidebar">
-    <h2>Menu</h2>
-    <ul>
-      <li>
-        <a href="#">Cadastro</a>
-        <ul class="submenu">
-          <li><a routerLink="/clientes">Clientes</a></li>
-          <li><a routerLink="/clientes/novo">Novo Cliente</a></li>
-          <li><a routerLink="/projetos">Projetos</a></li>
-          <li><a routerLink="/projetos/novo">Novo Projeto</a></li>
-          <li><a routerLink="/perfis">Perfis</a></li>
-          <li><a routerLink="/perfis/novo">Novo Perfil</a></li>
-          <li><a routerLink="/funcionarios">Funcionários</a></li>
-          <li><a routerLink="/funcionarios/novo">Novo Funcionário</a></li>
+<!-- Mobile Backdrop -->
+<div class="sgat-backdrop" *ngIf="isMobileOpen" (click)="closeMobileMenu()"></div>
+
+<div class="sgat-shell" [class.sidebar-collapsed]="isCollapsed">
+  <!-- SIDEBAR -->
+  <aside class="sgat-sidebar" [class.mobile-open]="isMobileOpen">
+    <!-- Brand Header -->
+    <div class="sidebar-header">
+      <a routerLink="/home" class="brand-link" (click)="closeMobileMenu()">
+        <div class="brand-logo">
+          <i class="bi bi-diagram-3-fill"></i>
+        </div>
+        <div class="brand-text" *ngIf="!isCollapsed">
+          <span class="brand-title">SGAT</span>
+          <span class="brand-sub">Spread Talent Body</span>
+        </div>
+      </a>
+      <button class="btn-toggle-desktop" (click)="toggleSidebar()" [title]="isCollapsed ? 'Expandir Menu' : 'Recolher Menu'">
+        <i class="bi" [ngClass]="isCollapsed ? 'bi-chevron-double-right' : 'bi-chevron-double-left'"></i>
+      </button>
+      <button class="btn-close-mobile" (click)="closeMobileMenu()" aria-label="Fechar menu">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Quick Action Feature: Controlar Horas -->
+    <div class="sidebar-highlight" *ngIf="!isCollapsed">
+      <a routerLink="/controlar-horas" routerLinkActive="active" class="highlight-card" (click)="closeMobileMenu()">
+        <div class="highlight-icon">
+          <i class="bi bi-lightning-charge-fill"></i>
+        </div>
+        <div class="highlight-body">
+          <span class="highlight-label">Ação Rápida</span>
+          <span class="highlight-title">Controlar Horas</span>
+        </div>
+        <span class="highlight-badge">CDU007</span>
+      </a>
+    </div>
+
+    <!-- Nav List -->
+    <nav class="sidebar-nav">
+      <!-- Section: Geral -->
+      <div class="nav-section-title" *ngIf="!isCollapsed">
+        <span>VISÃO GERAL</span>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" (click)="closeMobileMenu()" title="Início / Painel Geral">
+            <i class="bi bi-speedometer2 nav-icon"></i>
+            <span class="nav-text" *ngIf="!isCollapsed">Painel Geral</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Section: Operações e Horas (Accordion) -->
+      <div class="nav-group" [class.is-open]="groups['horas']">
+        <button type="button" class="group-header" (click)="toggleGroup('horas')" [title]="isCollapsed ? 'Operações & Horas' : ''">
+          <span class="group-left">
+            <i class="bi bi-clock-history nav-icon text-primary-accent"></i>
+            <span class="group-title" *ngIf="!isCollapsed">Operações & Horas</span>
+          </span>
+          <i class="bi group-chevron" *ngIf="!isCollapsed" [ngClass]="groups['horas'] ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+        </button>
+
+        <ul class="group-menu" *ngIf="groups['horas'] || isCollapsed">
+          <li class="nav-item">
+            <a routerLink="/controlar-horas" routerLinkActive="active" class="nav-link sub-link" (click)="closeMobileMenu()" title="Controlar Horas Trabalhadas">
+              <i class="bi bi-calendar2-range nav-icon"></i>
+              <span class="nav-text" *ngIf="!isCollapsed">Controlar Horas</span>
+              <span class="badge-mini bg-primary" *ngIf="!isCollapsed">MVP</span>
+            </a>
+          </li>
+
+          <li class="nav-item with-action">
+            <a routerLink="/horas-trabalhadas" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link sub-link" (click)="closeMobileMenu()" title="Horas Trabalhadas">
+              <i class="bi bi-journal-check nav-icon"></i>
+              <span class="nav-text" *ngIf="!isCollapsed">Horas Registradas</span>
+            </a>
+            <a routerLink="/horas-trabalhadas/novo" class="quick-add-btn" *ngIf="!isCollapsed" title="Novo Registro de Horas" (click)="closeMobileMenu()">
+              <i class="bi bi-plus"></i>
+            </a>
+          </li>
+
+          <li class="nav-item with-action">
+            <a routerLink="/ferias-licencas" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link sub-link" (click)="closeMobileMenu()" title="Férias e Licenças">
+              <i class="bi bi-calendar-event nav-icon"></i>
+              <span class="nav-text" *ngIf="!isCollapsed">Férias & Licenças</span>
+            </a>
+            <a routerLink="/ferias-licencas/novo" class="quick-add-btn" *ngIf="!isCollapsed" title="Nova Férias/Licença" (click)="closeMobileMenu()">
+              <i class="bi bi-plus"></i>
+            </a>
+          </li>
         </ul>
-      </li>
-      <li>
-        <a href="#">Configurações</a>
-        <ul class="submenu">
-          <li><a routerLink="/feriados">Feriados</a></li>
-          <li><a routerLink="/feriados/novo">Novo Feriado</a></li>
-          <li><a routerLink="/ferias-licencas">Férias/Licenças</a></li>
-          <li><a routerLink="/ferias-licencas/novo">Nova Férias/Licença</a></li>
-          <li><a routerLink="/configuracoes/afastamentos">Afastamentos</a></li>
+      </div>
+
+      <!-- Section: Cadastros Principais (Accordion) -->
+      <div class="nav-group" [class.is-open]="groups['cadastros']">
+        <button type="button" class="group-header" (click)="toggleGroup('cadastros')" [title]="isCollapsed ? 'Cadastros' : ''">
+          <span class="group-left">
+            <i class="bi bi-folder2-open nav-icon text-primary-accent"></i>
+            <span class="group-title" *ngIf="!isCollapsed">Cadastros</span>
+          </span>
+          <i class="bi group-chevron" *ngIf="!isCollapsed" [ngClass]="groups['cadastros'] ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+        </button>
+
+        <ul class="group-menu" *ngIf="groups['cadastros'] || isCollapsed">
+          <li class="nav-item with-action">
+            <a routerLink="/funcionarios" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link sub-link" (click)="closeMobileMenu()" title="Funcionários">
+              <i class="bi bi-people-fill nav-icon"></i>
+              <span class="nav-text" *ngIf="!isCollapsed">Funcionários</span>
+            </a>
+            <a routerLink="/funcionarios/novo" class="quick-add-btn" *ngIf="!isCollapsed" title="Novo Funcionário" (click)="closeMobileMenu()">
+              <i class="bi bi-plus"></i>
+            </a>
+          </li>
+
+          <li class="nav-item with-action">
+            <a routerLink="/clientes" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link sub-link" (click)="closeMobileMenu()" title="Clientes">
+              <i class="bi bi-building nav-icon"></i>
+              <span class="nav-text" *ngIf="!isCollapsed">Clientes</span>
+            </a>
+            <a routerLink="/clientes/novo" class="quick-add-btn" *ngIf="!isCollapsed" title="Novo Cliente" (click)="closeMobileMenu()">
+              <i class="bi bi-plus"></i>
+            </a>
+          </li>
+
+          <li class="nav-item with-action">
+            <a routerLink="/projetos" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link sub-link" (click)="closeMobileMenu()" title="Projetos">
+              <i class="bi bi-kanban nav-icon"></i>
+              <span class="nav-text" *ngIf="!isCollapsed">Projetos</span>
+            </a>
+            <a routerLink="/projetos/novo" class="quick-add-btn" *ngIf="!isCollapsed" title="Novo Projeto" (click)="closeMobileMenu()">
+              <i class="bi bi-plus"></i>
+            </a>
+          </li>
+
+          <li class="nav-item with-action">
+            <a routerLink="/perfis" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link sub-link" (click)="closeMobileMenu()" title="Perfis">
+              <i class="bi bi-person-lines-fill nav-icon"></i>
+              <span class="nav-text" *ngIf="!isCollapsed">Perfis Profissionais</span>
+            </a>
+            <a routerLink="/perfis/novo" class="quick-add-btn" *ngIf="!isCollapsed" title="Novo Perfil" (click)="closeMobileMenu()">
+              <i class="bi bi-plus"></i>
+            </a>
+          </li>
         </ul>
-      </li>
-      <li>
-        <a href="#">Controle de Horas</a>
-        <ul class="submenu">
-          <li><a routerLink="/horas-trabalhadas">Horas Trabalhadas (Listagem)</a></li>
-          <li><a routerLink="/horas-trabalhadas/novo">Nova Hora Trabalhada (Form)</a></li>
-          <li><a routerLink="/controlar-horas">Controlar Horas</a></li>
+      </div>
+
+      <!-- Section: Configurações & Parâmetros (Accordion) -->
+      <div class="nav-group" [class.is-open]="groups['configuracoes']">
+        <button type="button" class="group-header" (click)="toggleGroup('configuracoes')" [title]="isCollapsed ? 'Configurações' : ''">
+          <span class="group-left">
+            <i class="bi bi-sliders nav-icon text-primary-accent"></i>
+            <span class="group-title" *ngIf="!isCollapsed">Configurações</span>
+          </span>
+          <i class="bi group-chevron" *ngIf="!isCollapsed" [ngClass]="groups['configuracoes'] ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+        </button>
+
+        <ul class="group-menu" *ngIf="groups['configuracoes'] || isCollapsed">
+          <li class="nav-item with-action">
+            <a routerLink="/feriados" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link sub-link" (click)="closeMobileMenu()" title="Feriados">
+              <i class="bi bi-calendar-x nav-icon"></i>
+              <span class="nav-text" *ngIf="!isCollapsed">Feriados</span>
+            </a>
+            <a routerLink="/feriados/novo" class="quick-add-btn" *ngIf="!isCollapsed" title="Novo Feriado" (click)="closeMobileMenu()">
+              <i class="bi bi-plus"></i>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a routerLink="/configuracoes/afastamentos" routerLinkActive="active" class="nav-link sub-link" (click)="closeMobileMenu()" title="Afastamentos">
+              <i class="bi bi-shield-check nav-icon"></i>
+              <span class="nav-text" *ngIf="!isCollapsed">Afastamentos</span>
+            </a>
+          </li>
         </ul>
-      </li>
-    </ul>
-  </nav>
-  <div class="content">
-    <router-outlet></router-outlet>
+      </div>
+
+      <!-- Divider & Lab / Teste -->
+      <div class="nav-divider"></div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a routerLink="/teste" routerLinkActive="active" class="nav-link dev-link" (click)="closeMobileMenu()" title="Ambiente de Testes">
+            <i class="bi bi-code-slash nav-icon"></i>
+            <span class="nav-text" *ngIf="!isCollapsed">Ambiente Teste</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Sidebar User Footer -->
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="avatar-circle">GS</div>
+        <div class="user-meta" *ngIf="!isCollapsed">
+          <span class="user-name">Gestor Spread</span>
+          <span class="user-org">Talent Body · LTD 2026</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <div class="sgat-main-wrapper">
+    <!-- TOP NAVBAR -->
+    <header class="sgat-topbar">
+      <div class="topbar-left">
+        <button class="topbar-btn-toggle" (click)="toggleMobileMenu()" aria-label="Abrir menu lateral">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="topbar-breadcrumbs">
+          <span class="crumb-category">{{ pageInfo.category }}</span>
+          <i class="bi bi-chevron-right crumb-separator"></i>
+          <span class="crumb-active">
+            <i class="bi {{ pageInfo.icon }} me-1 text-primary"></i>
+            {{ pageInfo.title }}
+          </span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Shortcut CTA -->
+        <a routerLink="/controlar-horas" class="btn btn-sm btn-primary d-none d-md-inline-flex align-items-center gap-1 shadow-sm">
+          <i class="bi bi-play-circle-fill"></i>
+          <span>Apuração Mensal</span>
+        </a>
+
+        <!-- Date Pill -->
+        <div class="date-pill d-none d-sm-flex">
+          <i class="bi bi-calendar3 me-1 text-muted"></i>
+          <span>{{ currentDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+
+        <!-- System Pill -->
+        <span class="badge bg-light text-dark border d-none d-lg-inline-block">
+          <i class="bi bi-cpu me-1 text-success"></i> SGAT LTD
+        </span>
+      </div>
+    </header>
+
+    <!-- CONTENT BODY -->
+    <main class="sgat-content">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="sgat-footer">
+      <div class="container-fluid d-flex flex-wrap justify-content-between align-items-center py-2 px-4 text-muted small">
+        <div>
+          <strong>SGAT</strong> – Sistema de Gerenciamento de Alocação de Talentos
+          <span class="mx-2">·</span> Spread Tecnologia & LTD Estácio BH
+        </div>
+        <div>
+          <span>Fase 2 (MVP)</span>
+        </div>
+      </div>
+    </footer>
   </div>
 </div>

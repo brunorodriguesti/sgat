@@ -1,0 +1,50 @@
+<div class="container py-2">
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+      <div>
+        <h3 class="h5 fw-bold mb-0 text-slate-800">
+          <i class="bi bi-tools text-primary me-2"></i> Diagnóstico & Ambiente de Testes
+        </h3>
+        <span class="text-muted small">Ambiente interno de verificação de componentes do SGAT</span>
+      </div>
+      <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1.5">
+        <i class="bi bi-check-circle-fill me-1"></i> UI Ativa
+      </span>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="p-3 rounded-3 border bg-light">
+          <h6 class="fw-bold text-slate-800 mb-2">Informações da Aplicação</h6>
+          <ul class="list-unstyled small text-muted mb-0">
+            <li class="py-1"><strong>Projeto:</strong> SGAT – Frontend (sgat-ui)</li>
+            <li class="py-1"><strong>Framework:</strong> Angular 18 (Standalone Schematics / NgModules)</li>
+            <li class="py-1"><strong>Design:</strong> Bootstrap 5 + Bootstrap Icons + Custom SGAT Theme</li>
+            <li class="py-1"><strong>Backend API:</strong> Spring Boot (http://localhost:8081)</li>
+            <li class="py-1"><strong>Fase Atual:</strong> LTD 2026.1 (Fase 2 - Controle de Horas)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="p-3 rounded-3 border bg-light">
+          <h6 class="fw-bold text-slate-800 mb-2">Atalhos Rápidos de Teste</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <a routerLink="/controlar-horas" class="btn btn-sm btn-primary">
+              <i class="bi bi-clock-history me-1"></i> Controlar Horas
+            </a>
+            <a routerLink="/funcionarios" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-people me-1"></i> Funcionários
+            </a>
+            <a routerLink="/clientes" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-building me-1"></i> Clientes
+            </a>
+            <a routerLink="/projetos" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-kanban me-1"></i> Projetos
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

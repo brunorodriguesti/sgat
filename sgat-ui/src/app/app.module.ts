@@ -23,7 +23,8 @@ import { FeriasLicencasListComponent } from './ferias/ferias-licencas-list.compo
 import { FeriasLicencasFormComponent } from './ferias/ferias-licencas-form.component';
 import { HorasTrabalhadasListComponent } from './controlar-hora-mes/horas-trabalhadas-list.component';
 import { HorasTrabalhadasFormComponent } from './controlar-hora-mes/horas-trabalhadas-form.component';
-import { ControlarHoraMesComponent } from './controlar-hora-mes/controlar-hora-mes.component'; // Import the new component
+import { ControlarHoraMesComponent } from './controlar-hora-mes/controlar-hora-mes.component';
+import { TesteComponent } from './teste/teste.component'; // Import the new component
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { ControlarHoraMesComponent } from './controlar-hora-mes/controlar-hora-m
     FeriasLicencasFormComponent,
     HorasTrabalhadasListComponent,
     HorasTrabalhadasFormComponent,
-    ControlarHoraMesComponent // Add the new component here
+    ControlarHoraMesComponent,
+    TesteComponent // Add the new component here
   ],
   imports: [
     BrowserModule,

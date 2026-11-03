@@ -1,29 +1,76 @@
 <div class="container">
-  <h2>Lista de Horas Trabalhadas</h2>
-  <button (click)="newHorasTrabalhadas()" class="btn btn-primary mb-3">Nova Hora Trabalhada</button>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Data Trabalho</th>
-        <th>Horas Trabalhadas</th>
-        <th>Funcionário</th>
-        <th>Valor</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of horasTrabalhadas">
-        <td>{{ item.id }}</td>
-        <td>{{ item.dataTrabalho }}</td>
-        <td>{{ item.horasTrabalhadas }}</td>
-        <td>{{ item.funcionarioNome }}</td>
-        <td>{{ item.valor | currency:'BRL' }}</td>
-        <td>
-          <button (click)="editHorasTrabalhadas(item.id!)" class="btn btn-info btn-sm me-2">Editar</button>
-          <button (click)="deleteHorasTrabalhadas(item.id!)" class="btn btn-danger btn-sm">Excluir</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom py-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div>
+        <h2 class="h5 fw-bold mb-0 text-slate-800">
+          <i class="bi bi-journal-check text-primary me-2"></i> Registros de Horas Trabalhadas
+        </h2>
+        <span class="text-muted small">Histórico de horas computadas individualmente por consultor</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <a routerLink="/controlar-horas" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1.5">
+          <i class="bi bi-lightning-charge-fill"></i>
+          <span>Apuração Mensal (CDU007)</span>
+        </a>
+        <button (click)="newHorasTrabalhadas()" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1.5 shadow-sm">
+          <i class="bi bi-plus-lg"></i>
+          <span>Novo Registro</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 80px;">ID</th>
+              <th>Data de Trabalho</th>
+              <th>Funcionário</th>
+              <th class="text-center">Horas Trabalhadas</th>
+              <th class="text-end">Valor Faturado</th>
+              <th style="width: 180px;" class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of horasTrabalhadas">
+              <td class="text-muted fw-semibold">#{{ item.id }}</td>
+              <td>
+                <span class="badge bg-light text-dark border">
+                  <i class="bi bi-calendar-check me-1 text-muted"></i>
+                  {{ item.dataTrabalho }}
+                </span>
+              </td>
+              <td class="fw-semibold text-slate-800">
+                <i class="bi bi-person-circle me-1.5 text-muted"></i>
+                {{ item.funcionarioNome || 'Funcionário #' + item.funcionarioId }}
+              </td>
+              <td class="text-center">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1">
+                  {{ item.horasTrabalhadas }} horas
+                </span>
+              </td>
+              <td class="text-end fw-bold text-success">{{ item.valor | currency:'BRL' }}</td>
+              <td class="text-end">
+                <button (click)="editHorasTrabalhadas(item.id!)" class="btn btn-outline-primary btn-sm me-1.5" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                  <span class="d-none d-md-inline ms-1">Editar</span>
+                </button>
+                <button (click)="deleteHorasTrabalhadas(item.id!)" class="btn btn-outline-danger btn-sm" title="Excluir">
+                  <i class="bi bi-trash"></i>
+                  <span class="d-none d-md-inline ms-1">Excluir</span>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="!horasTrabalhadas || horasTrabalhadas.length === 0">
+              <td colspan="6" class="text-center py-4 text-muted">
+                <i class="bi bi-inbox fs-3 d-block mb-2 text-muted"></i>
+                Nenhum registro de horas trabalhas encontrado.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
