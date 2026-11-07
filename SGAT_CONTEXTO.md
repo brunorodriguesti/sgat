@@ -29,8 +29,8 @@ A empresa  presta o serviço de **Talent Body**: aloca consultores (desenvolvedo
 | Fase | Período | Conteúdo | Situação |
 |---|---|---|---|
 | 1 – Cadastros | LTD 2025.2 | CDU001 Manter Cliente · CDU002 Manter Projeto · CDU003 Manter Funcionário · CDU004 Manter Feriados · CDU005 Manter Perfil · CDU006 Manter Férias e Licenças | ✅ desenvolvido |
-| 2 – Controle de horas (MVP) | LTD 2026.1 | CDU007 Controlar Horas (filtros → gerar → editar → excluir → salvar → imprimir PDF) | ✅ em andamento (tela e serviço já existem) |
-| Futuro | – | CDU008 Consultar Horas (cliente e gestor) · CDU009 Validar Horas do Funcionário (cliente atesta ou contesta com mensagem) · Tela de login · Importação de planilha de férias · Importação de arquivos do sistema de ponto · Aprovação de horas extras · Publicação na Web | ⛔ fora do escopo atual |
+| 2 – Controle de horas (MVP) | LTD 2026.1 | CDU007 Controlar Horas (filtros → gerar → editar → excluir → salvar → imprimir PDF) | ✅ em andamento (tela e serviço já existem; ⚠️ erro ao imprimir relatório a consertar; rever caso de uso de horas registradas) |
+| Futuro (Posteriormente) | – | **Área do Cliente:** CDU008 Consultar Horas (somente leitura para o cliente) · CDU009 Validar Horas (cliente dá check "OK" ou "Não OK", com comentário obrigatório se Não OK) · Tela de login do cliente · **Relatório do Funcionário por Dia:** relatório indicando qual dia trabalhou e qual faltou · **Revisão de Feriados:** dia/mês sem ano, feriados móveis (carnaval), integração com API ou carga CSV · Importação de planilha de férias · Importação de arquivos do sistema de ponto · Aprovação de horas extras · Publicação na Web | ⛔ fora do escopo atual |
 
 > Na numeração do documento de Contexto, **Controlar Horas = CDU007**. Nos documentos da Atividade 7 o exercício reinicia a numeração (CDU001 = Controlar Horas, CDU002 = Gerar Relatório). Ao referenciar casos de uso no código, use a numeração do Contexto (CDU007) e trate "Gerar Relatório de Horas Trabalhadas" como subfluxo dele.
 
@@ -172,6 +172,13 @@ public class HorasTrabalhadas {
 5. **Tipo de `horas_trabalhadas`.** `LocalTime`/`TIME` **não representa totais de horas do mês** (168 h não cabe em `LocalTime`, que é hora do dia). Preferir `BigDecimal` (horas decimais) ou `Integer` (minutos) / `Duration`. O próprio comentário na entidade já aponta isso. Idem `ferias_licencas.horas_afastadas`.
 6. **Territórios.** O Contexto cita municipais SP, RJ, Brasília, BH e estaduais "por estado"; o enum só tem SP, MG, RJ, DF. Definir se `Territorio` mistura estado e município.
 7. **Armazenar CPF/matrícula** como `VARCHAR(11)` sem máscara; validar dígitos.
+8. **Revisão de feriados (dia e mês sem ano, feriados móveis e carga externa):**
+   - *Feriados fixos:* atualmente a coluna é `data DATE` (com ano). O ideal para feriados fixos que se repetem anualmente (ex.: 01/01, 21/04, 01/05, 07/09, 25/12) é colocar **dia e mês sem ano** para não exigir recadastro a cada ano.
+   - *Feriados móveis:* datas com variação anual (como **carnaval**, páscoa, corpus christi) dependem do ano civil e exigem tratamento diferenciado (cadastro com ano ou cálculo algorítmico).
+   - *Alimentação dos feriados:* avaliar o consumo de uma **API de feriados** (ex.: BrasilAPI) ou **dar carga com arquivo externo em formato CSV**.
+9. **Revisão do caso de uso de horas registradas e impressão de relatório:**
+   - O caso de uso de horas registradas precisa ser revisto para garantir consistência no ciclo completo: cálculo → edição → salvamento → emissão.
+   - ⚠️ **Erro ao imprimir relatório no controle de horas (Consertar):** a implementação atual no backend (`HorasTrabalhadasService.generatePdfReport`) devolve texto plano como bytes em vez de gerar um PDF binário formatado real, além de a UI não repassar as horas editadas (`editableHoras`). Precisa ser corrigido.
 
 ---
 
@@ -181,13 +188,15 @@ public class HorasTrabalhadas {
 |---|---|
 | RN01 | Jornada padrão: **8 horas por dia útil** (segunda a sexta). |
 | RN02 | Sábados e domingos **não** são contabilizados. |
-| RN03 | **Feriados** que caem em dia útil abatem 8 h de todos os funcionários. 🔶 Considerar o território: nacional para todos; estadual/municipal conforme `territorio_sindicato` do funcionário. |
+| RN03 | **Feriados** que caem em dia útil abatem 8 h de todos os funcionários. Feriados fixos devem considerar dia e mês sem ano; feriados móveis (como carnaval) consideram o ano do cálculo. Avaliar integração com API externa ou carga via arquivo CSV. 🔶 Considerar o território: nacional para todos; estadual/municipal conforme `territorio_sindicato` do funcionário. |
 | RN04 | **Férias e licenças** (médica, maternidade, paternidade e outros afastamentos) abatem 8 h por dia útil do funcionário afetado, considerando apenas os dias **dentro do período** do relatório. |
 | RN05 | Dia com feriado **e** licença é abatido **uma única vez**. |
 | RN06 | `valor total = horas trabalhadas × valor da hora do funcionário`. |
 | RN07 | O gestor pode **editar manualmente** as horas (compensações para mais ou para menos, horas extras). O valor total é recalculado. Aceitar apenas números ≥ 0. |
 | RN08 | **Excluir** remove o funcionário só do relatório em tela, nunca do cadastro. |
 | RN09 | Salvar grava, por funcionário: id, período (início/fim), horas (calculadas ou editadas), valor da hora e valor total. 🔶 Definir comportamento ao salvar de novo o mesmo funcionário/projeto/período (sobrescrever, bloquear ou versionar). |
+| RN10 | **Área do cliente (Acesso e Validação):** Posteriormente, o cliente terá acesso restrito exclusivamente para **visualizar os dados** dos seus projetos (somente leitura). O cliente poderá dar check indicando se está **"OK"** ou **"Não OK"**. Se marcar **"Não OK"**, é **obrigatório preencher um comentário** com a justificativa. |
+| RN11 | **Relatório do funcionário por dia:** O sistema deverá gerar relatório detalhado do funcionário por dia, indicando para cada dia se ele trabalhou ou faltou (especificando motivo: feriado, licença/férias ou falta). |
 
 **Exemplo de conferência:** 01/09/2026 a 30/09/2026 → 22 dias úteis; feriado em 07/09 e 2 dias de licença → 19 dias × 8 = **152 h**; a R$ 100,00/h → **R$ 15.200,00**.
 
@@ -207,7 +216,7 @@ public class HorasTrabalhadas {
 7. Sistema calcula dias trabalhados → horas (×8) → valor total.
 8. Sistema exibe: **funcionário, CPF, horas calculadas, horas editáveis, valor da hora, valor total**.
 
-**Fluxos alternativos (a partir da lista):** *Editar* horas (recalcula valor) · *Excluir selecionados* (com confirmação) · *Salvar* (persiste a lista) · *Imprimir PDF* (reflete edições e exclusões).
+**Fluxos alternativos (a partir da lista):** *Editar* horas (recalcula valor) · *Excluir selecionados* (com confirmação) · *Salvar* (persiste a lista) · *Imprimir PDF* (reflete edições e exclusões; ⚠️ *Erro ao imprimir relatório no controle de horas a consertar*).
 
 **Exceções:** FE01 data inválida · FE02 data inicial posterior à final · FE03 campo obrigatório vazio · FE04 nenhum funcionário alocado no período · FE05 valor de horas inválido na edição (mantém o anterior).
 
@@ -220,7 +229,32 @@ public class HorasTrabalhadas {
 | US04 | Como gestor, quero editar as horas de um funcionário para ajustar o que o cálculo não cobre. | Recalcula total; só números ≥ 0. |
 | US05 | Como gestor, quero remover funcionários da lista para cobrar só quem deve. | Multisseleção; confirmação; não apaga cadastro. |
 | US06 | Como gestor, quero salvar as horas apuradas para manter histórico. | Grava id, período, horas, valor/hora, total; mensagem de sucesso. |
-| US07 | Como gestor, quero gerar PDF para enviar ao gestor do cliente. | PDF = lista exibida, com edições/exclusões. |
+| US07 | Como gestor, quero gerar PDF para enviar ao gestor do cliente. | PDF = lista exibida, com edições/exclusões. ⚠️ Corrigir erro de geração. |
+
+### 7.1 Revisão do caso de uso de horas registradas
+O caso de uso de horas registradas / controle de horas precisa de revisão geral para assegurar conformidade do fluxo de ponta a ponta:
+- **Cálculo de apontamento:** cálculo dos dias úteis abatendo feriados (fixos e móveis) e afastamentos.
+- **Edição em tela:** propagação imediata do recálculo de valor total e uso das horas editadas na gravação e na impressão.
+- **Gravação consistente:** persistência em `horas_trabalhadas` com tipos apropriados para acumulados mensais.
+- ⚠️ **Erro ao imprimir relatório no controle de horas (Consertar):** o botão de impressão aciona o endpoint `/api/horas-trabalhadas/relatorio/pdf`, que atualmente retorna apenas uma string pura convertida em bytes, gerando erro de documento inválido no browser. É necessário implementar a geração real de PDF (backend ou frontend) e passar as horas editadas (`editableHoras`).
+
+### 7.2 Casos de uso futuros (Posteriormente)
+
+#### CDU008 – Área do Cliente (Acesso e Validação de Horas)
+- **Ator:** Gestor do Cliente (Cliente).
+- **Pré-condição:** Cliente autenticado no sistema.
+- **Regras e Comportamento:**
+  - **Acesso somente leitura:** O cliente só pode visualizar os dados de horas/apontamentos alocados aos seus projetos, sem permissão de alteração ou exclusão dos registros.
+  - **Mecanismo de validação:** O cliente pode dar check indicando se as horas estão **"OK"** ou **"Não OK"**.
+  - **Comentário obrigatório:** Se o cliente selecionar **"Não OK"**, o sistema exige obrigatoriamente o preenchimento de um **comentário/justificativa** apontando a divergência antes de submeter a validação.
+
+#### CDU009 – Relatório do Funcionário por Dia
+- **Ator:** Gestor (e posteriormente Cliente).
+- **Objetivo:** Visualização detalhada diária dos apontamentos de um funcionário ao longo do período selecionado.
+- **Detalhamento:**
+  - Lista todos os dias do período especificado (calendário por dia).
+  - Indica claramente **qual dia ele trabalhou** (ex.: 8h) e **qual dia faltou**.
+  - Para cada ausência/falta, identifica a justificativa correspondente: feriado (nacional, estadual ou municipal), férias, licença médica/afastamento ou falta.
 
 ---
 
@@ -234,6 +268,7 @@ public class HorasTrabalhadas {
 
 ### Pontos observados na captura de tela do MVP 🔶
 - Mensagem **"Erro ao salvar horas."** visível junto ao relatório → o *Salvar* falhava naquele momento (verificar mapeamento DTO ↔ entidade, `LocalTime` vs horas totais e a migration V002).
+- ⚠️ **Erro ao imprimir relatório no controle de horas (Consertar):** ao clicar no botão "Imprimir PDF", ocorre erro no navegador. Causa identificada no código: o backend (`HorasTrabalhadasService.generatePdfReport`) devolve uma string de texto em bytes com header `application/pdf`, corrompendo o arquivo, e o frontend envia apenas `horasTrabalhadasCalculadas` ignorando `editableHoras`.
 - Período **01/05/2026–31/05/2026** retornou **168 h** (21 dias úteis × 8). 1º de maio (sexta) é feriado nacional: se estiver cadastrado, o esperado seria 160 h → conferir cadastro de feriados e a regra RN03.
 - Valores exibidos como `R$30,240.00` (formato en-US). Usar locale **pt-BR** (`R$ 30.240,00`) via `registerLocaleData(localePt)` e `LOCALE_ID = 'pt-BR'` / `currency:'BRL':'symbol':'1.2-2':'pt-BR'`.
 - Os testes de componente (`*.spec.ts`) parecem ser o esqueleto gerado pelo CLI (com erros de compilação no editor) → ainda sem cobertura real.
@@ -265,14 +300,29 @@ public class HorasTrabalhadas {
 
 ## 10. Próximos passos sugeridos (backlog)
 
-1. **Corrigir o salvamento** de horas (erro observado) e trocar `LocalTime` por tipo adequado + migration `V003`.
-2. **Revisar o cálculo** (dias úteis, feriados nacionais/estaduais/municipais por território, licenças parciais no período, sem dupla contagem).
-3. **Decidir o modelo de alocação** (funcionário em vários projetos com perfil/valor por projeto) – impacta `funcionario`, o relatório e o ER.
-4. Completar cadastros: **código interno do cliente**, preenchimento de `Perfil`, herança do valor da hora.
-5. **Imprimir PDF** (backend, ex.: JasperReports/OpenPDF, ou frontend, ex.: jsPDF/pdfmake) – decisão pendente.
-6. Locale pt-BR, confirmação de exclusão, mensagem de sucesso ao salvar, estados de carregamento/erro.
-7. Testes: unitários do cálculo, de integração (repositórios com MySQL/Testcontainers) e de componente Angular.
-8. Futuro: relatório consolidado e por dia (campos *Data, Status, Perfil, Horas normais, Valor/hora, Valor/dia, Horas totais, Valor total*), CDU008, CDU009, login, importações.
+### 10.1 Rever e Corrigir (MVP / Curto Prazo)
+1. **Rever Feriados:**
+   - No cadastro de feriados, **colocar dia e mês sem ano** para feriados fixos anuais (ex.: 01/01, 21/04, 01/05, 07/09, 12/10, 02/11, 15/11, 20/11, 25/12), evitando a necessidade de recadastrá-los todos os anos.
+   - **Pensar nos feriados móveis como carnaval** (e Páscoa, Sexta-feira Santa, Corpus Christi), cujas datas variam a cada ano civil.
+   - Avaliar soluções de automação: **talvez usar uma API de feriado** (ex.: BrasilAPI) ou **dar carga com arquivo externo em formato CSV**.
+2. **Rever o caso de uso de horas registradas:**
+   - Rever as etapas do caso de uso de controle/registro de horas (cálculo de dias úteis, aplicação das horas editadas e persistência correta).
+   - ⚠️ **Erro ao imprimir relatório no controle de horas (Consertar):** corrigir a falha no botão "Imprimir PDF". Implementar gerador real de PDF (no backend com biblioteca como JasperReports/PDFBox ou no frontend com jsPDF/pdfmake) e assegurar que as horas editadas pelo gestor sejam refletidas no documento impresso.
+3. **Corrigir o salvamento de horas:** resolver falha de persistência e trocar `LocalTime` por tipo adequado (`BigDecimal` ou minutos) na entidade `HorasTrabalhadas` e na migration `V003`.
+4. **Revisar o cálculo:** conferir dias úteis, regras de feriados por território sindicato e afastamentos/licenças no período.
+5. **Decidir modelo de alocação:** múltiplos projetos/perfis por funcionário vs modelo 1:1 atual.
+6. **Ajustes de UI/UX:** aplicar locale `pt-BR` em moedas e datas, diálogo de confirmação de exclusão e mensagens amigáveis de feedback.
+7. **Testes:** unitários para as regras puras de cálculo de horas e testes de integração de persistência.
+
+### 10.2 Posteriormente (Fases Futuras)
+1. **Área para o cliente acessar:**
+   - Criar uma área/portal de acesso para o cliente (gestor do cliente).
+   - **O cliente só pode visualizar os dados** (perfil com permissão de somente leitura para os projetos vinculados a ele).
+   - **Check de validação:** o cliente pode dar check se o relatório/apontamento está **"OK"** ou **"Não OK"**.
+   - **Comentário obrigatório:** se o status for marcado como **"Não OK"**, o cliente deve **preencher um comentário** com a justificativa da discordância.
+2. **Relatório do funcionário por dia:**
+   - Fazer um relatório do funcionário por dia – indicando detalhadamente qual dia ele trabalhou e qual dia faltou (com status/motivo: 8h normais trabalhadas, feriado, férias, licença médica ou falta).
+3. **Evoluções adicionais:** importação de planilha de férias, integração com arquivos do sistema de ponto, workflow de aprovação de horas extras e publicação em ambiente de produção/web.
 
 ---
 
